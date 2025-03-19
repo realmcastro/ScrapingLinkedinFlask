@@ -22,10 +22,10 @@ Uma aplicação web simples para buscar vagas no LinkedIn com filtros avançados
 ## 📦 Instalação
 
 1. Clone o repositório:
-   ```
-   git clone git@github.com:realmcastro/ScrapingLinkedinFlask.git
-   cd ScrapingLinkedinFlask
-
+```
+git clone git@github.com:realmcastro/ScrapingLinkedinFlask.git
+cd ScrapingLinkedinFlask
+```
 Instale as dependências:
 ```
 pip install -r requirements.txt
@@ -52,26 +52,25 @@ Tipo de emprego:
 
 - Tempo integral (F), Meio período (P), Contrato (C), Temporário (T).
 - Local de trabalho: Presencial, Remoto.
-
-Distância e limite de vagas.
+- Distância e limite de vagas.
 
 Exportação:
-Após realizar a busca, você pode exportar os resultados em CSV ou JSON.
+- Após realizar a busca, você pode exportar os resultados em CSV ou JSON.
 
 📜 Exportação
 
-CSV: Exporta os resultados em uma planilha para análises offline.
+CSV: Exporta os resultados em uma planilha para análises offline.<br>
 JSON: Ideal para integração com outras aplicações ou APIs.
 
 📁 Estrutura do Projeto
 linkedin-job-scraper/
-├── scraper.py        # Lógica principal do scraper
-├── app.py            # Arquivo principal do servidor Flask
-├── templates/        # Arquivos HTML para renderização
-│   ├── index.html    # Página inicial com filtros e busca
-│   ├── results.html  # Página de resultados
-├── static/           # Arquivos CSS/JS
-├── requirements.txt  # Dependências do projeto
+├── scraper.py        # Lógica principal do scraper<br>
+├── app.py            # Arquivo principal do servidor Flask<br>
+├── templates/        # Arquivos HTML para renderização<br>
+│   ├── index.html    # Página inicial com filtros e busca<br>
+│   ├── results.html  # Página de resultados<br>
+├── static/           # Arquivos CSS/JS<br>
+├── requirements.txt  # Dependências do projeto<br>
 └── README.md         # Documentação do projeto
 
 ⚠️ Notas Importantes
@@ -81,9 +80,8 @@ linkedin-job-scraper/
 
 🖼️ Pré-visualização
 
-Tela de Busca
-
-LinkedIn Job Scraper
+- Tela de Busca<br>
+- LinkedIn Job Scraper
 
 🔧 Principais Elementos
 
