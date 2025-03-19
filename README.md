@@ -43,14 +43,10 @@ http://127.0.0.1:5000
 
 🖥️ Interface Gráfica
 
-Filtros disponíveis:
-
-Palavras-chave (ex.: React AND (Jr OR Junior)).
-
-Localização (ex.: "Brazil").
-
-Data máxima (ex.: "31/12/2023").
-
+Filtros disponíveis:<br>
+Palavras-chave (ex.: React AND (Jr OR Junior)).<br>
+Localização (ex.: "Brazil").<br>
+Data máxima (ex.: "31/12/2023").<br>
 Tipo de emprego:
 
 Tempo integral (F), Meio período (P), Contrato (C), Temporário (T).
@@ -88,13 +84,17 @@ linkedin-job-scraper/
 Limitações: O LinkedIn pode bloquear o acesso ao scraper após diversas requisições em curto período. Use com moderação.
 Compatibilidade: Testado com Python 3.x.
 
+
 🖼️ Pré-visualização
+
 Tela de Busca
+
 LinkedIn Job Scraper
 
-Principais Elementos
-Filtros de Busca: Permite definir palavras-chave, tipo de emprego, localização, data máxima e outros critérios.
-Status e Log: Feedback em tempo real sobre o progresso da busca.
+🔧 Principais Elementos
+
+Filtros de Busca: Permite definir palavras-chave, tipo de emprego, localização, data máxima e outros critérios.<br>
+Status e Log: Feedback em tempo real sobre o progresso da busca.<br>
 Exportação: Botões para salvar os resultados em CSV ou JSON.
 
 📝 Licença
