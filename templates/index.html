@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinkedIn Job Scraper</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .log-container {
+        height: 200px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 0.9rem;
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .job-card:hover {
+        cursor: pointer;
+        background-color: #f0f7ff;
+      }
+      .job-description {
+        max-height: 500px;
+        overflow-y: auto;
+      }
+      .nav-tabs .nav-link.active {
+        font-weight: bold;
+        border-bottom: 2px solid #0d6efd;
+      }
+      .linkedin-blue {
+        background-color: #0077b5;
+        color: white;
+      }
+      .linkedin-blue:hover {
+        background-color: #006097;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark linkedin-blue">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-linkedin me-2"></i>
+          LinkedIn Job Scraper
+        </a>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <ul class="nav nav-tabs mb-4" id="mainTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="search-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#search-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="search-tab-pane"
+            aria-selected="true"
+          >
+            <i class="bi bi-search me-1"></i> Busca
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="results-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#results-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="results-tab-pane"
+            aria-selected="false"
+          >
+            <i class="bi bi-list-ul me-1"></i> Resultados
+            <span id="results-count" class="badge bg-primary rounded-pill"
+              >0</span
+            >
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="job-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#job-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="job-tab-pane"
+            aria-selected="false"
+          >
+            <i class="bi bi-file-text me-1"></i> Visualizar Vaga
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="mainTabContent">
+        <!-- Tab de Busca -->
+        <div
+          class="tab-pane fade show active"
+          id="search-tab-pane"
+          role="tabpanel"
+          aria-labelledby="search-tab"
+          tabindex="0"
+        >
+          <div class="row">
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">Filtros de Busca</h5>
+                </div>
+                <div class="card-body">
+                  <form id="searchForm">
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="keywords" class="form-label"
+                          >Palavras-chave</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="keywords"
+                          placeholder="ex: React AND (Jr OR Junior)"
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label for="location" class="form-label"
+                          >Localização</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="location"
+                          value="Brazil"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-4">
+                        <label for="max_date" class="form-label"
+                          >Data máxima</label
+                        >
+                        <input type="date" class="form-control" id="max_date" />
+                      </div>
+                      <div class="col-md-4">
+                        <label for="distance" class="form-label"
+                          >Distância (milhas)</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="distance"
+                          min="0"
+                        />
+                      </div>
+                      <div class="col-md-4">
+                        <label for="limit_jobs" class="form-label"
+                          >Limite de vagas</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="limit_jobs"
+                          value="10"
+                          min="1"
+                          max="100"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label class="form-label">Tipo de emprego</label>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input job-type"
+                            type="checkbox"
+                            value="F"
+                            id="jobTypeF"
+                          />
+                          <label class="form-check-label" for="jobTypeF">
+                            Tempo integral (F)
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input job-type"
+                            type="checkbox"
+                            value="P"
+                            id="jobTypeP"
+                          />
+                          <label class="form-check-label" for="jobTypeP">
+                            Meio período (P)
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input job-type"
+                            type="checkbox"
+                            value="C"
+                            id="jobTypeC"
+                          />
+                          <label class="form-check-label" for="jobTypeC">
+                            Contrato (C)
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input job-type"
+                            type="checkbox"
+                            value="T"
+                            id="jobTypeT"
+                          />
+                          <label class="form-check-label" for="jobTypeT">
+                            Temporário (T)
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Local de trabalho</label>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input place"
+                            type="checkbox"
+                            value="1"
+                            id="place1"
+                          />
+                          <label class="form-check-label" for="place1">
+                            Presencial
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input place"
+                            type="checkbox"
+                            value="2"
+                            id="place2"
+                          />
+                          <label class="form-check-label" for="place2">
+                            Remoto
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mt-4">
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="searchButton"
+                      >
+                        <i class="bi bi-search me-1"></i> Buscar Vagas
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-danger"
+                        id="stopButton"
+                        disabled
+                      >
+                        <i class="bi bi-stop-circle me-1"></i> Parar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">Status</h5>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label">Progresso</label>
+                    <div class="progress">
+                      <div
+                        id="progressBar"
+                        class="progress-bar progress-bar-striped progress-bar-animated"
+                        role="progressbar"
+                        style="width: 0%"
+                      >
+                        0%
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Status atual</label>
+                    <p id="statusMessage" class="card-text">
+                      Pronto para iniciar
+                    </p>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Total de vagas</label>
+                    <p id="totalJobs" class="card-text">0</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">Log</h5>
+                </div>
+                <div class="card-body p-0">
+                  <div id="logContainer" class="log-container"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab de Resultados -->
+        <div
+          class="tab-pane fade"
+          id="results-tab-pane"
+          role="tabpanel"
+          aria-labelledby="results-tab"
+          tabindex="0"
+        >
+          <div class="card">
+            <div class="card-header">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Vagas Encontradas</h5>
+                <div>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="filterResults"
+                    placeholder="Filtrar resultados..."
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-3">
+                <div><span id="filteredCount">0</span> vagas exibidas</div>
+                <div>
+                  <div class="btn-group" role="group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      id="exportCsv"
+                    >
+                      <i class="bi bi-file-earmark-spreadsheet me-1"></i>
+                      Exportar CSV
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      id="exportJson"
+                    >
+                      <i class="bi bi-file-earmark-code me-1"></i> Exportar JSON
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="resultsContainer" class="list-group">
+                <!-- Os resultados serão inseridos aqui -->
+                <p class="text-center text-muted my-5">
+                  Nenhum resultado para exibir
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab de Visualização de Vaga -->
+        <div
+          class="tab-pane fade"
+          id="job-tab-pane"
+          role="tabpanel"
+          aria-labelledby="job-tab"
+          tabindex="0"
+        >
+          <div class="card">
+            <div class="card-header">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 id="jobTitle" class="card-title mb-0">Detalhes da Vaga</h5>
+                <a
+                  id="linkedinLink"
+                  href="#"
+                  target="_blank"
+                  class="btn btn-sm linkedin-blue"
+                >
+                  <i class="bi bi-linkedin me-1"></i> Ver no LinkedIn
+                </a>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <h6 id="jobCompany" class="mb-1 fs-5">Empresa</h6>
+                <p id="jobLocation" class="text-muted mb-0">Localização</p>
+                <p id="jobTime" class="text-muted">
+                  <small>Publicado há</small>
+                </p>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-12">
+                  <div id="jobInfo" class="card bg-light">
+                    <div class="card-body">
+                      <!-- Informações adicionais serão inseridas aqui -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <h6 class="mb-3">Descrição</h6>
+              <div id="jobDescription" class="job-description">
+                <!-- Descrição completa será inserida aqui -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Variáveis globais
+      let jobs = [];
+      let statusInterval = null;
+      let currentJobId = null;
+
+      // Elementos DOM
+      const searchForm = document.getElementById("searchForm");
+      const searchButton = document.getElementById("searchButton");
+      const stopButton = document.getElementById("stopButton");
+      const progressBar = document.getElementById("progressBar");
+      const statusMessage = document.getElementById("statusMessage");
+      const logContainer = document.getElementById("logContainer");
+      const resultsContainer = document.getElementById("resultsContainer");
+      const resultsCount = document.getElementById("results-count");
+      const totalJobs = document.getElementById("totalJobs");
+      const filterResults = document.getElementById("filterResults");
+      const filteredCount = document.getElementById("filteredCount");
+      const exportCsvBtn = document.getElementById("exportCsv");
+      const exportJsonBtn = document.getElementById("exportJson");
+      const mainTab = document.getElementById("mainTab");
+
+      // Inicialização
+      document.addEventListener("DOMContentLoaded", function () {
+        searchForm.addEventListener("submit", startSearch);
+        stopButton.addEventListener("click", stopSearch);
+        filterResults.addEventListener("input", applyFilter);
+        exportCsvBtn.addEventListener("click", exportCsv);
+        exportJsonBtn.addEventListener("click", exportJson);
+
+        // Adicionar manipulador de eventos para cliques em resultados
+        resultsContainer.addEventListener("click", function (e) {
+          const jobCard = e.target.closest(".job-card");
+          if (jobCard) {
+            const jobId = jobCard.dataset.jobId;
+            loadJobDetails(jobId);
+          }
+        });
+      });
+
+      // Iniciar busca
+      function startSearch(e) {
+        e.preventDefault();
+
+        // Preparar dados do formulário
+        const data = {
+          keywords: document.getElementById("keywords").value,
+          location: document.getElementById("location").value,
+          max_date: document.getElementById("max_date").value,
+          distance: document.getElementById("distance").value,
+          limit_jobs: document.getElementById("limit_jobs").value,
+          job_type: Array.from(
+            document.querySelectorAll(".job-type:checked")
+          ).map((el) => el.value),
+          place: Array.from(document.querySelectorAll(".place:checked")).map(
+            (el) => el.value
+          ),
+        };
+
+        // Limpar estado anterior
+        jobs = [];
+        logContainer.innerHTML = "";
+        resultsContainer.innerHTML =
+          '<p class="text-center text-muted my-5">Nenhum resultado para exibir</p>';
+        resultsCount.textContent = "0";
+        filteredCount.textContent = "0";
+        progressBar.style.width = "0%";
+        progressBar.textContent = "0%";
+        statusMessage.textContent = "Pronto para iniciar";
+        totalJobs.textContent = "0";
+
+        // Habilitar/desabilitar botões
+        searchButton.disabled = true;
+        stopButton.disabled = false;
+
+        // Iniciar busca via API
+        fetch("/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              alert(data.error);
+              searchButton.disabled = false;
+              stopButton.disabled = true;
+              return;
+            }
+
+            // Iniciar intervalo para atualizar status
+            statusInterval = setInterval(updateStatus, 1000);
+          })
+          .catch((error) => {
+            console.error("Erro ao iniciar busca:", error);
+            searchButton.disabled = false;
+            stopButton.disabled = true;
+          });
+      }
+
+      // Parar busca
+      function stopSearch() {
+        fetch("/stop", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message) {
+              searchButton.disabled = false;
+              stopButton.disabled = true;
+              clearInterval(statusInterval);
+            }
+          })
+          .catch((error) => {
+            console.error("Erro ao parar busca:", error);
+          });
+      }
+
+      // Atualizar status da busca
+      function updateStatus() {
+        fetch("/status")
+          .then((response) => response.json())
+          .then((data) => {
+            // Atualizar progresso
+            progressBar.style.width = `${data.progress}%`;
+            progressBar.textContent = `${data.progress}%`;
+            statusMessage.textContent = data.status_message;
+            totalJobs.textContent = data.total_jobs;
+
+            // Atualizar logs
+            logContainer.innerHTML = data.log_messages
+              .map((log) => `<div>${log}</div>`)
+              .join("");
+            logContainer.scrollTop = logContainer.scrollHeight;
+
+            // Atualizar resultados
+            if (data.results.length > 0) {
+              jobs = data.results;
+              renderResults(jobs);
+              resultsCount.textContent = data.collected_jobs;
+            }
+
+            // Finalizar intervalo se a busca estiver concluída
+            if (!data.is_searching) {
+              clearInterval(statusInterval);
+              searchButton.disabled = false;
+              stopButton.disabled = true;
+            }
+          })
+          .catch((error) => {
+            console.error("Erro ao atualizar status:", error);
+          });
+      }
+
+      // Renderizar resultados
+      function renderResults(jobs) {
+        if (jobs.length === 0) {
+          resultsContainer.innerHTML =
+            '<p class="text-center text-muted my-5">Nenhum resultado para exibir</p>';
+          filteredCount.textContent = "0";
+          return;
+        }
+
+        resultsContainer.innerHTML = jobs
+          .map(
+            (job) => `
+                <div class="list-group-item job-card" data-job-id="${job.id}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">${job.title || "Sem título"}</h6>
+                            <small class="text-muted">${
+                              job.company || "Empresa não informada"
+                            } - ${job.location || "Local não informado"}</small>
+                        </div>
+                        <small class="text-muted">${job.time || ""}</small>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+
+        filteredCount.textContent = jobs.length;
+      }
+
+      // Aplicar filtro aos resultados
+      function applyFilter() {
+        const filter = filterResults.value.toLowerCase();
+        if (!filter) {
+          renderResults(jobs);
+          return;
+        }
+
+        const filtered = jobs.filter((job) => {
+          const title = (job.title || "").toLowerCase();
+          const company = (job.company || "").toLowerCase();
+          const location = (job.location || "").toLowerCase();
+          const description = (job.description || "").toLowerCase();
+
+          return (
+            title.includes(filter) ||
+            company.includes(filter) ||
+            location.includes(filter) ||
+            description.includes(filter)
+          );
+        });
+
+        renderResults(filtered);
+      }
+
+      // Carregar detalhes de uma vaga
+      function loadJobDetails(jobId) {
+        fetch(`/job/${jobId}`)
+          .then((response) => response.json())
+          .then((job) => {
+            if (job.error) {
+              alert("Erro ao carregar detalhes da vaga: " + job.error);
+              return;
+            }
+
+            // Armazenar ID da vaga atual
+            currentJobId = jobId;
+
+            // Atualizar detalhes básicos
+            document.getElementById("jobTitle").textContent =
+              job.title || "Sem título";
+            document.getElementById("jobCompany").textContent =
+              job.company || "Empresa não informada";
+            document.getElementById("jobLocation").textContent =
+              job.location || "Local não informado";
+            document.getElementById("jobTime").textContent = job.time
+              ? `Publicado ${job.time}`
+              : "";
+            document.getElementById("jobDescription").textContent =
+              job.description || "Nenhuma descrição disponível";
+            document.getElementById("linkedinLink").href = job.link || "#";
+
+            // Atualizar informações adicionais
+            const jobInfo = document.getElementById("jobInfo");
+            const infoContent = [];
+
+            // Adicionar campos comuns de critérios
+            const commonFields = [
+              "Seniority level",
+              "Employment type",
+              "Job function",
+              "Industries",
+            ];
+            for (const field of commonFields) {
+              if (job[field]) {
+                infoContent.push(
+                  `<div class="mb-2"><strong>${field}:</strong> ${job[field]}</div>`
+                );
+              }
+            }
+
+            // Adicionar quaisquer outros campos personalizados
+            for (const key in job) {
+              if (
+                ![
+                  "id",
+                  "title",
+                  "company",
+                  "location",
+                  "link",
+                  "description",
+                  "time",
+                  "error",
+                ].includes(key) &&
+                !commonFields.includes(key)
+              ) {
+                infoContent.push(
+                  `<div class="mb-2"><strong>${key}:</strong> ${job[key]}</div>`
+                );
+              }
+            }
+
+            jobInfo.innerHTML =
+              infoContent.length > 0
+                ? infoContent.join("")
+                : '<p class="text-muted mb-0">Nenhuma informação adicional disponível</p>';
+
+            // Alterar para a aba de visualização
+            const jobTab = document.getElementById("job-tab");
+            const bsTab = new bootstrap.Tab(jobTab);
+            bsTab.show();
+          })
+          .catch((error) => {
+            console.error("Erro ao carregar detalhes da vaga:", error);
+          });
+      }
+
+      // Exportar resultados como CSV
+      function exportCsv() {
+        if (jobs.length === 0) {
+          alert("Nenhum resultado disponível para exportar");
+          return;
+        }
+
+        window.location.href = "/export/csv";
+      }
+
+      // Exportar resultados como JSON
+      function exportJson() {
+        if (jobs.length === 0) {
+          alert("Nenhum resultado disponível para exportar");
+          return;
+        }
+
+        window.location.href = "/export/json";
+      }
+    </script>
+  </body>
+</html>
