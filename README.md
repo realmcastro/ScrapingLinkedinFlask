@@ -43,14 +43,15 @@ http://127.0.0.1:5000
 
 🖥️ Interface Gráfica
 
-Filtros disponíveis:<br>
-Palavras-chave (ex.: React AND (Jr OR Junior)).<br>
-Localização (ex.: "Brazil").<br>
-Data máxima (ex.: "31/12/2023").<br>
+- Filtros disponíveis:<br>
+- Palavras-chave (ex.: React AND (Jr OR Junior)).<br>
+- Localização (ex.: "Brazil").<br>
+- Data máxima (ex.: "31/12/2023").<br>
+
 Tipo de emprego:
 
-Tempo integral (F), Meio período (P), Contrato (C), Temporário (T).
-Local de trabalho: Presencial, Remoto.
+- Tempo integral (F), Meio período (P), Contrato (C), Temporário (T).
+- Local de trabalho: Presencial, Remoto.
 
 Distância e limite de vagas.
 
@@ -65,24 +66,17 @@ JSON: Ideal para integração com outras aplicações ou APIs.
 📁 Estrutura do Projeto
 linkedin-job-scraper/
 ├── scraper.py        # Lógica principal do scraper
-
 ├── app.py            # Arquivo principal do servidor Flask
-
 ├── templates/        # Arquivos HTML para renderização
-
 │   ├── index.html    # Página inicial com filtros e busca
-
 │   ├── results.html  # Página de resultados
-
 ├── static/           # Arquivos CSS/JS
-
 ├── requirements.txt  # Dependências do projeto
-
 └── README.md         # Documentação do projeto
 
 ⚠️ Notas Importantes
-Limitações: O LinkedIn pode bloquear o acesso ao scraper após diversas requisições em curto período. Use com moderação.
-Compatibilidade: Testado com Python 3.x.
+- Limitações: O LinkedIn pode bloquear o acesso ao scraper após diversas requisições em curto período. Use com moderação.
+- Compatibilidade: Testado com Python 3.x.
 
 
 🖼️ Pré-visualização
@@ -93,9 +87,12 @@ LinkedIn Job Scraper
 
 🔧 Principais Elementos
 
-Filtros de Busca: Permite definir palavras-chave, tipo de emprego, localização, data máxima e outros critérios.<br>
-Status e Log: Feedback em tempo real sobre o progresso da busca.<br>
-Exportação: Botões para salvar os resultados em CSV ou JSON.
+- Filtros de Busca: Permite definir palavras-chave, tipo de emprego, localização, data máxima e outros critérios.<br>
+- Status e Log: Feedback em tempo real sobre o progresso da busca.<br>
+- Exportação: Botões para salvar os resultados em CSV ou JSON.
 
 📝 Licença
 Este projeto está sob a licença MIT. Consulte o arquivo LICENSE para mais detalhes.
+
+Preview:
+![alt text](image.png)
