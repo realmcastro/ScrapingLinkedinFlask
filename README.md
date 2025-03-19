@@ -63,7 +63,7 @@ CSV: Exporta os resultados em uma planilha para análises offline.<br>
 JSON: Ideal para integração com outras aplicações ou APIs.
 
 📁 Estrutura do Projeto
-linkedin-job-scraper/
+linkedin-job-scraper/<br>
 ├── scraper.py        # Lógica principal do scraper<br>
 ├── app.py            # Arquivo principal do servidor Flask<br>
 ├── templates/        # Arquivos HTML para renderização<br>
