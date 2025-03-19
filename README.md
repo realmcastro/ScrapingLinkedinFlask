@@ -22,44 +22,66 @@ Uma aplicação web simples para buscar vagas no LinkedIn com filtros avançados
 ## 📦 Instalação
 
 1. Clone o repositório:
-   ```bash
+   ```
    git clone git@github.com:realmcastro/ScrapingLinkedinFlask.git
    cd ScrapingLinkedinFlask
-Instale as dependências:
-pip install -r requirements.txt
 
+Instale as dependências:
+```
+pip install -r requirements.txt
+```
 Inicie o servidor Flask:
+```
 python app.py
+```
 
 Acesse a aplicação no navegador:
+```
 http://127.0.0.1:5000
-
+```
 🔧 Como Usar
+
 🖥️ Interface Gráfica
+
 Filtros disponíveis:
+
 Palavras-chave (ex.: React AND (Jr OR Junior)).
+
 Localização (ex.: "Brazil").
+
 Data máxima (ex.: "31/12/2023").
+
 Tipo de emprego:
+
 Tempo integral (F), Meio período (P), Contrato (C), Temporário (T).
 Local de trabalho: Presencial, Remoto.
+
 Distância e limite de vagas.
+
 Exportação:
 Após realizar a busca, você pode exportar os resultados em CSV ou JSON.
 
 📜 Exportação
+
 CSV: Exporta os resultados em uma planilha para análises offline.
 JSON: Ideal para integração com outras aplicações ou APIs.
 
 📁 Estrutura do Projeto
 linkedin-job-scraper/
 ├── scraper.py        # Lógica principal do scraper
+
 ├── app.py            # Arquivo principal do servidor Flask
+
 ├── templates/        # Arquivos HTML para renderização
+
 │   ├── index.html    # Página inicial com filtros e busca
+
 │   ├── results.html  # Página de resultados
+
 ├── static/           # Arquivos CSS/JS
+
 ├── requirements.txt  # Dependências do projeto
+
 └── README.md         # Documentação do projeto
 
 ⚠️ Notas Importantes
