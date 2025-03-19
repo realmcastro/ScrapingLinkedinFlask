@@ -74,12 +74,12 @@ def get_job_count(keywords, location, time_range, distance, job_type, place, lim
         
         if job_count_element:
             job_count = job_count_element.text.strip().replace(",", "").replace("+", "")
-            return min(int(job_count), 1000)  # Limite máximo de segurança
-        return 1000  # Default se não encontrar contagem
+            return min(int(job_count), 1000) 
+        return 1000 
     
     except Exception as e:
         log_message(f"Erro ao obter contagem de vagas: {e}")
-        return 1000  # Default para continuar a execução
+        return 1000  
 
 def get_job_ids_per_page(keywords, location, time_range, distance, job_type, place, start):
     try:
@@ -147,17 +147,14 @@ def search_jobs_thread(keywords, location, max_date, distance, job_type, place, 
     search_status["results"] = []
     
     try:
-        # Calcular intervalo de tempo
         time_range = calculate_time_range(max_date)
         
-        # Passo 1: Obter número total de vagas
         log_message("Obtendo número total de vagas...")
         total_jobs = get_job_count(keywords, location, time_range, distance, job_type, place, limit_jobs)
         num_pages = math.ceil(total_jobs / 25)
         log_message(f"Encontradas ~{total_jobs} vagas ({num_pages} páginas)")
         search_status["total_jobs"] = total_jobs
         
-        # Passo 2: Coletar IDs de vagas
         job_ids = []
         for page in range(num_pages):
             if not search_status["is_searching"]:
@@ -166,7 +163,7 @@ def search_jobs_thread(keywords, location, max_date, distance, job_type, place, 
             new_ids = get_job_ids_per_page(keywords, location, time_range, distance, job_type, place, page * 25)
             job_ids += new_ids
             
-            progress = (page + 1) / num_pages * 50  # Primeiros 50% do progresso
+            progress = (page + 1) / num_pages * 50 
             update_progress(progress, f"Coletando páginas: {page+1}/{num_pages} ({len(job_ids)} IDs)")
             sleep(0.1)
         
@@ -176,11 +173,9 @@ def search_jobs_thread(keywords, location, max_date, distance, job_type, place, 
             search_status["is_searching"] = False
             return
         
-        # Limitar número de vagas se necessário
         if limit_jobs > 0:
             job_ids = job_ids[:limit_jobs]
         
-        # Passo 3: Obter detalhes de cada vaga
         jobs = []
         for i, job_id in enumerate(job_ids):
             if not search_status["is_searching"]:
@@ -189,14 +184,13 @@ def search_jobs_thread(keywords, location, max_date, distance, job_type, place, 
             job_detail = get_job_detail(job_id)
             if job_detail and not job_detail.get('error'):
                 jobs.append(job_detail)
-                search_status["results"] = jobs  # Atualizar resultados em tempo real
+                search_status["results"] = jobs  
             
-            progress = 50 + (i + 1) / len(job_ids) * 50  # Últimos 50% do progresso
+            progress = 50 + (i + 1) / len(job_ids) * 50 
             update_progress(progress, f"Obtendo detalhes: {i+1}/{len(job_ids)} ({len(jobs)} vagas)")
             search_status["collected_jobs"] = len(jobs)
             sleep(0.2)
         
-        # Finalizar
         if search_status["is_searching"]:
             log_message(f"✅ {len(jobs)} vagas coletadas com sucesso")
             search_status["status_message"] = f"Concluído: {len(jobs)} vagas encontradas"

@@ -67,19 +67,15 @@ def export_csv():
     
     # Criar arquivo CSV em memória
     output = io.StringIO()
-    # Determinar quais colunas incluir, baseado em todos os campos existentes
     all_keys = set()
     for job in search_status["results"]:
         all_keys.update(job.keys())
     
-    # Remover campos de erro se presentes
     if 'error' in all_keys:
         all_keys.remove('error')
     
-    # Ordenar campos para consistência
     fieldnames = sorted(all_keys)
     
-    # Mover campos importantes para o início
     for field in ['id', 'title', 'company', 'location', 'time', 'link', 'description']:
         if field in fieldnames:
             fieldnames.remove(field)
@@ -92,7 +88,6 @@ def export_csv():
         if not job.get('error'):
             writer.writerow(job)
     
-    # Preparar resposta
     output.seek(0)
     filename = f"vagas_linkedin_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
     
@@ -107,10 +102,8 @@ def export_json():
     if not search_status["results"]:
         return jsonify({"error": "Nenhum resultado disponível para exportar"}), 400
     
-    # Filtrar jobs com erro
     valid_jobs = [job for job in search_status["results"] if not job.get('error')]
     
-    # Preparar resposta
     filename = f"vagas_linkedin_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     
     return Response(
